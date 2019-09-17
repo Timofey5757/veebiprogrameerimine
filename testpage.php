@@ -28,7 +28,6 @@
   <?php
 	echo "<h1>".$username.", veebiprogrammeerimine</h1>";
   ?>
-  <h1>Andrus Rinde, veebiprogrammeerimine</h1>
   <p>See veebileht on loodud õppetöö käigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
 	<hr>
 	<?php
