@@ -16,3 +16,40 @@ function signUp($name, $surname, $email, $gender, $birthDate, $password){
 	$conn -> close();
 	return $notice;
 }
+
+function signIn($email, $password){
+	$notice = "";
+	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+	$stmt = $mysqli->prepare("SELECT password FROM vpusers3 WHERE email=?");
+	echo $mysqli->error;
+	$stmt->bind_param("s", $email);
+	$stmt->bind_result($passwordFromDb);
+	if($stmt->execute()){
+		//kui päring õnnestus
+	  if($stmt->fetch()){
+		//kasutaja on olemas
+		if(password_verify($password, $passwordFromDb)){
+		  //kui salasõna klapib
+		  $stmt->close();
+		  $stmt = $mysqli->prepare("SELECT firstname, lastname FROM vpusers3 WHERE email=?");
+		  echo $mysqli->error;
+		  $stmt->bind_param("s", $email);
+		  $stmt->bind_result($firstnameFromDb, $lastnameFromDb);
+		  $stmt->execute();
+		  $stmt->fetch();
+		  $notice = "Sisse logis " .$firstnameFromDb ." " .$lastnameFromDb ."!";
+		  		  
+		} else {
+		  $notice = "Vale salasõna!";
+		}
+	  } else {
+		$notice = "Sellist kasutajat (" .$email .") ei leitud!";  
+	  }
+	} else {
+	  $notice = "Sisselogimisel tekkis tehniline viga!" .$stmt->error;
+	}
+	
+	$stmt->close();
+	$mysqli->close();
+	return $notice;
+  }//sisselogimine lõppeb
